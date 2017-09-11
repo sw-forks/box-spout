@@ -27,6 +27,8 @@ class Writer extends AbstractMultiSheetsWriter
     /** @var bool Whether inline or shared strings should be used - inline string is more memory efficient */
     protected $shouldUseInlineStrings = true;
 
+    public $defaultDateStyle;
+
     /** @var Internal\Workbook The workbook for the XLSX file */
     protected $book;
 
@@ -44,6 +46,12 @@ class Writer extends AbstractMultiSheetsWriter
         $this->throwIfWriterAlreadyOpened('Writer must be configured before opening it.');
 
         $this->tempFolder = $tempFolder;
+        return $this;
+    }
+
+    public function setDefaultDateStyle($style)
+    {
+        $this->defaultDateStyle = $this->getWorkbook()->getStyleHelper()->registerStyle($style);
         return $this;
     }
 
@@ -74,7 +82,7 @@ class Writer extends AbstractMultiSheetsWriter
     {
         if (!$this->book) {
             $tempFolder = ($this->tempFolder) ? : sys_get_temp_dir();
-            $this->book = new Workbook($tempFolder, $this->shouldUseInlineStrings, $this->shouldCreateNewSheetsAutomatically, $this->defaultRowStyle);
+            $this->book = new Workbook($tempFolder, $this->shouldUseInlineStrings, $this->shouldCreateNewSheetsAutomatically, $this->defaultRowStyle, $this);
             $this->book->addNewSheetAndMakeItCurrent($colWidths);
         }
     }

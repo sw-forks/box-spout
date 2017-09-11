@@ -35,6 +35,10 @@ class Workbook extends AbstractWorkbook
     /** @var \Box\Spout\Writer\XLSX\Helper\StyleHelper Helper to apply styles */
     protected $styleHelper;
 
+    protected $defaultDateStyle;
+
+    public $writer;
+
     /**
      * @param string $tempFolder
      * @param bool $shouldUseInlineStrings
@@ -42,7 +46,7 @@ class Workbook extends AbstractWorkbook
      * @param \Box\Spout\Writer\Style\Style $defaultRowStyle
      * @throws \Box\Spout\Common\Exception\IOException If unable to create at least one of the base folders
      */
-    public function __construct($tempFolder, $shouldUseInlineStrings, $shouldCreateNewSheetsAutomatically, $defaultRowStyle)
+    public function __construct($tempFolder, $shouldUseInlineStrings, $shouldCreateNewSheetsAutomatically, $defaultRowStyle, $writer)
     {
         parent::__construct($shouldCreateNewSheetsAutomatically, $defaultRowStyle);
 
@@ -52,6 +56,7 @@ class Workbook extends AbstractWorkbook
         $this->fileSystemHelper->createBaseFilesAndFolders();
 
         $this->styleHelper = new StyleHelper($defaultRowStyle);
+        $this->writer = $writer;
 
         // This helper will be shared by all sheets
         $xlFolder = $this->fileSystemHelper->getXlFolder();
@@ -61,7 +66,7 @@ class Workbook extends AbstractWorkbook
     /**
      * @return \Box\Spout\Writer\XLSX\Helper\StyleHelper Helper to apply styles to XLSX files
      */
-    protected function getStyleHelper()
+    public function getStyleHelper()
     {
         return $this->styleHelper;
     }
@@ -86,7 +91,7 @@ class Workbook extends AbstractWorkbook
         $sheet = new Sheet($newSheetIndex, $this->internalId);
 
         $worksheetFilesFolder = $this->fileSystemHelper->getXlWorksheetsFolder();
-        $worksheet = new Worksheet($sheet, $worksheetFilesFolder, $this->sharedStringsHelper, $this->styleHelper, $this->shouldUseInlineStrings, $colWidths);
+        $worksheet = new Worksheet($sheet, $worksheetFilesFolder, $this->sharedStringsHelper, $this->styleHelper, $this->shouldUseInlineStrings, $colWidths, $this);
         $this->worksheets[] = $worksheet;
 
         return $worksheet;

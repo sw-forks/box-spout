@@ -147,6 +147,15 @@ class StyleBuilder
     }
 
     /**
+     * @param int $numberFormatId
+     */
+    public function setNumberFormatId($numberFormatId)
+    {
+        $this->style->setNumberFormatId($numberFormatId);
+        return $this;
+    }
+
+    /**
      * Returns the configured style. The style is cached and can be reused.
      *
      * @api

@@ -61,6 +61,8 @@ class Style
     /** @var bool Whether the wrap text property was set */
     protected $hasSetWrapText = false;
 
+    protected $numberFormatId = 0;
+
     /**
      * @var Border
      */
@@ -314,6 +316,22 @@ class Style
     public function getBackgroundColor()
     {
         return $this->backgroundColor;
+    }
+
+    /**
+     * @param int $numberFormatId
+     */
+    public function setNumberFormatId($numberFormatId)
+    {
+        $this->numberFormatId = $numberFormatId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumberFormatId()
+    {
+        return $this->numberFormatId;
     }
 
     /**

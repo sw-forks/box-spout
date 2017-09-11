@@ -57,6 +57,8 @@ EOD;
     /** @var int Index of the last written row */
     protected $lastWrittenRowIndex = 0;
 
+    protected $book;
+
     /**
      * @param \Box\Spout\Writer\Common\Sheet $externalSheet The associated "external" sheet
      * @param string $worksheetFilesFolder Temporary folder where the files to create the XLSX will be stored
@@ -65,8 +67,9 @@ EOD;
      * @param bool $shouldUseInlineStrings Whether inline or shared strings should be used
      * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
-    public function __construct($externalSheet, $worksheetFilesFolder, $sharedStringsHelper, $styleHelper, $shouldUseInlineStrings, $colWidths = [])
+    public function __construct($externalSheet, $worksheetFilesFolder, $sharedStringsHelper, $styleHelper, $shouldUseInlineStrings, $colWidths = [], $book = null)
     {
+        $this->book = $book;
         $this->externalSheet = $externalSheet;
         $this->sharedStringsHelper = $sharedStringsHelper;
         $this->styleHelper = $styleHelper;
@@ -226,9 +229,15 @@ EOD;
     {
         $columnIndex = CellHelper::getCellIndexFromColumnIndex($cellNumber);
         $cellXML = '<c r="' . $columnIndex . $rowIndex . '"';
-        $cellXML .= ' s="' . $styleId . '"';
+        if (is_object($cellValue) && get_class($cellValue) == 'DateTime') {
+            $cellXML .= ' s="' . $this->book->writer->defaultDateStyle->getId() . '"';
+        } else {
+            $cellXML .= ' s="' . $styleId . '"';
+        }
 
-        if (CellHelper::isNonEmptyString($cellValue)) {
+        if (is_object($cellValue) && get_class($cellValue) == 'DateTime') {
+            $cellXML .= '><v>' . \PHPExcel_Shared_Date::PHPToExcel($cellValue->format('Y-m-d')) . '</v></c>';
+        } else if (CellHelper::isNonEmptyString($cellValue)) {
             $cellXML .= $this->getCellXMLFragmentForNonEmptyString($cellValue);
         } else if (CellHelper::isBoolean($cellValue)) {
             $cellXML .= ' t="b"><v>' . intval($cellValue) . '</v></c>';
