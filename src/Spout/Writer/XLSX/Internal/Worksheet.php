@@ -65,7 +65,7 @@ EOD;
      * @param bool $shouldUseInlineStrings Whether inline or shared strings should be used
      * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
-    public function __construct($externalSheet, $worksheetFilesFolder, $sharedStringsHelper, $styleHelper, $shouldUseInlineStrings)
+    public function __construct($externalSheet, $worksheetFilesFolder, $sharedStringsHelper, $styleHelper, $shouldUseInlineStrings, $colWidths = [])
     {
         $this->externalSheet = $externalSheet;
         $this->sharedStringsHelper = $sharedStringsHelper;
@@ -77,7 +77,7 @@ EOD;
         $this->stringHelper = new StringHelper();
 
         $this->worksheetFilePath = $worksheetFilesFolder . '/' . strtolower($this->externalSheet->getName()) . '.xml';
-        $this->startSheet();
+        $this->startSheet($colWidths);
     }
 
     /**
@@ -86,13 +86,28 @@ EOD;
      * @return void
      * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
-    protected function startSheet()
+    public function startSheet($colWidths = [])
     {
         $this->sheetFilePointer = fopen($this->worksheetFilePath, 'w');
         $this->throwIfSheetFilePointerIsNotAvailable();
 
         fwrite($this->sheetFilePointer, self::SHEET_XML_FILE_HEADER);
+        fwrite($this->sheetFilePointer, $this->getColWidths($colWidths));
         fwrite($this->sheetFilePointer, '<sheetData>');
+    }
+
+    public function getColWidths($colWidths)
+    {
+        if (!count($colWidths)) return '';
+
+        $result = [];
+        $result[] = '<cols>';
+        foreach ($colWidths as $key => $col_width) {
+            $result[] = '<col min="' . ($key + 1) . '" max="' . ($key + 1) . '" width="' . $col_width . '" bestFit="1" customWidth="1"/>';
+        }
+        $result[] = '</cols>';
+
+        return implode('', $result);
     }
 
     /**

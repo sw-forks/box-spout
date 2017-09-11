@@ -70,19 +70,19 @@ class Writer extends AbstractMultiSheetsWriter
      * @return void
      * @throws \Box\Spout\Common\Exception\IOException If unable to open the file for writing
      */
-    protected function openWriter()
+    protected function openWriter($colWidths = [])
     {
         if (!$this->book) {
             $tempFolder = ($this->tempFolder) ? : sys_get_temp_dir();
             $this->book = new Workbook($tempFolder, $this->shouldUseInlineStrings, $this->shouldCreateNewSheetsAutomatically, $this->defaultRowStyle);
-            $this->book->addNewSheetAndMakeItCurrent();
+            $this->book->addNewSheetAndMakeItCurrent($colWidths);
         }
     }
 
     /**
      * @return Internal\Workbook The workbook representing the file to be written
      */
-    protected function getWorkbook()
+    public function getWorkbook()
     {
         return $this->book;
     }
