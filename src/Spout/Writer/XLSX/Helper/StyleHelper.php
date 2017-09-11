@@ -314,9 +314,9 @@ EOD;
 
             $content .= sprintf(' applyBorder="%d"', $style->shouldApplyBorder() ? 1 : 0);
 
-            if ($style->shouldWrapText()) {
+            if ($style->shouldWrapText() || $style->getHorizontalAlignment()) {
                 $content .= ' applyAlignment="1">';
-                $content .= '<alignment wrapText="1"/>';
+                $content .= '<alignment ' . ($style->getHorizontalAlignment() ? 'horizontal="' . $style->getHorizontalAlignment() . '"' : '') . ' ' . ($style->shouldWrapText() ? 'wrapText="1"' : '') . '/>';
                 $content .= '</xf>';
             } else {
                 $content .= '/>';

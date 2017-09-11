@@ -155,6 +155,12 @@ class StyleBuilder
         return $this;
     }
 
+    public function setHorizontalAlignment($horizontalAlignment)
+    {
+        $this->style->setHorizontalAlignment($horizontalAlignment);
+        return $this;
+    }
+
     /**
      * Returns the configured style. The style is cached and can be reused.
      *

@@ -63,6 +63,8 @@ class Style
 
     protected $numberFormatId = 0;
 
+    protected $horizontalAlignment = null;
+
     /**
      * @var Border
      */
@@ -341,6 +343,22 @@ class Style
     public function shouldApplyBackgroundColor()
     {
         return $this->hasSetBackgroundColor;
+    }
+
+    /**
+     * @param null $horizontalAlignment
+     */
+    public function setHorizontalAlignment($horizontalAlignment)
+    {
+        $this->horizontalAlignment = $horizontalAlignment;
+    }
+
+    /**
+     * @return null
+     */
+    public function getHorizontalAlignment()
+    {
+        return $this->horizontalAlignment;
     }
 
     /**
