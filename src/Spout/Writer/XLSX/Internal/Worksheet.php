@@ -61,6 +61,8 @@ EOD;
 
     protected $mergeCells = [];
 
+    protected $autoFilter = null;
+
     /**
      * @param \Box\Spout\Writer\Common\Sheet $externalSheet The associated "external" sheet
      * @param string $worksheetFilesFolder Temporary folder where the files to create the XLSX will be stored
@@ -288,6 +290,11 @@ EOD;
         $this->mergeCells[] = $range;
     }
 
+    public function setAutoFilter($range)
+    {
+        $this->autoFilter = $range;
+    }
+
     /**
      * Closes the worksheet
      *
@@ -300,6 +307,9 @@ EOD;
         }
 
         fwrite($this->sheetFilePointer, '</sheetData>');
+        if (!empty($this->autoFilter)) {
+            fwrite($this->sheetFilePointer, '<autoFilter ref="' . $this->autoFilter . '"/>');
+        }
         if (!empty($this->mergeCells)) {
             fwrite($this->sheetFilePointer, '<mergeCells count="' . count($this->mergeCells) . '">');
             foreach ($this->mergeCells as $merge_cells) {
