@@ -229,13 +229,13 @@ EOD;
     {
         $columnIndex = CellHelper::getCellIndexFromColumnIndex($cellNumber);
         $cellXML = '<c r="' . $columnIndex . $rowIndex . '"';
-        if (is_object($cellValue) && get_class($cellValue) == 'DateTime') {
+        if (is_object($cellValue) && $cellValue instanceof \DateTime) {
             $cellXML .= ' s="' . $this->book->writer->defaultDateStyle->getId() . '"';
         } else {
             $cellXML .= ' s="' . $styleId . '"';
         }
 
-        if (is_object($cellValue) && get_class($cellValue) == 'DateTime') {
+        if (is_object($cellValue) && $cellValue instanceof \DateTime) {
             $cellXML .= '><v>' . \PHPExcel_Shared_Date::PHPToExcel($cellValue->format('Y-m-d')) . '</v></c>';
         } else if (CellHelper::isNonEmptyString($cellValue)) {
             $cellXML .= $this->getCellXMLFragmentForNonEmptyString($cellValue);
