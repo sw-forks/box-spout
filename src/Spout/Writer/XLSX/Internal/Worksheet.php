@@ -59,6 +59,8 @@ EOD;
 
     protected $book;
 
+    protected $mergeCells = [];
+
     /**
      * @param \Box\Spout\Writer\Common\Sheet $externalSheet The associated "external" sheet
      * @param string $worksheetFilesFolder Temporary folder where the files to create the XLSX will be stored
@@ -281,6 +283,11 @@ EOD;
         return $cellXMLFragment;
     }
 
+    public function mergeCells($range)
+    {
+        $this->mergeCells[] = $range;
+    }
+
     /**
      * Closes the worksheet
      *
@@ -293,6 +300,13 @@ EOD;
         }
 
         fwrite($this->sheetFilePointer, '</sheetData>');
+        if (!empty($this->mergeCells)) {
+            fwrite($this->sheetFilePointer, '<mergeCells count="' . count($this->mergeCells) . '">');
+            foreach ($this->mergeCells as $merge_cells) {
+                fwrite($this->sheetFilePointer, '<mergeCell ref="' . $merge_cells . '"/>');
+            }
+            fwrite($this->sheetFilePointer, '</mergeCells>');
+        }
         fwrite($this->sheetFilePointer, '</worksheet>');
         fclose($this->sheetFilePointer);
     }
