@@ -61,9 +61,9 @@ abstract class AbstractWorkbook implements WorkbookInterface
      * @return WorksheetInterface The created sheet
      * @throws \Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
      */
-    public function addNewSheetAndMakeItCurrent($colWidths = [])
+    public function addNewSheetAndMakeItCurrent($colWidths = [], $pane = null)
     {
-        $worksheet = $this->addNewSheet($colWidths);
+        $worksheet = $this->addNewSheet($colWidths, $pane);
         $this->setCurrentWorksheet($worksheet);
 
         return $worksheet;

@@ -78,12 +78,12 @@ class Writer extends AbstractMultiSheetsWriter
      * @return void
      * @throws \Box\Spout\Common\Exception\IOException If unable to open the file for writing
      */
-    protected function openWriter($colWidths = [])
+    protected function openWriter($colWidths = [], $pane = null)
     {
         if (!$this->book) {
             $tempFolder = ($this->tempFolder) ? : sys_get_temp_dir();
             $this->book = new Workbook($tempFolder, $this->shouldUseInlineStrings, $this->shouldCreateNewSheetsAutomatically, $this->defaultRowStyle, $this);
-            $this->book->addNewSheetAndMakeItCurrent($colWidths);
+            $this->book->addNewSheetAndMakeItCurrent($colWidths, $pane);
         }
     }
 

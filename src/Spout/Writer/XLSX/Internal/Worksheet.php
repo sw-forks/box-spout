@@ -71,7 +71,7 @@ EOD;
      * @param bool $shouldUseInlineStrings Whether inline or shared strings should be used
      * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
-    public function __construct($externalSheet, $worksheetFilesFolder, $sharedStringsHelper, $styleHelper, $shouldUseInlineStrings, $colWidths = [], $book = null)
+    public function __construct($externalSheet, $worksheetFilesFolder, $sharedStringsHelper, $styleHelper, $shouldUseInlineStrings, $colWidths = [], $book = null, $pane = null)
     {
         $this->book = $book;
         $this->externalSheet = $externalSheet;
@@ -84,7 +84,7 @@ EOD;
         $this->stringHelper = new StringHelper();
 
         $this->worksheetFilePath = $worksheetFilesFolder . '/' . strtolower($this->externalSheet->getName()) . '.xml';
-        $this->startSheet($colWidths);
+        $this->startSheet($colWidths, $pane);
     }
 
     /**
@@ -93,12 +93,15 @@ EOD;
      * @return void
      * @throws \Box\Spout\Common\Exception\IOException If the sheet data file cannot be opened for writing
      */
-    public function startSheet($colWidths = [])
+    public function startSheet($colWidths = [], $pane = null)
     {
         $this->sheetFilePointer = fopen($this->worksheetFilePath, 'w');
         $this->throwIfSheetFilePointerIsNotAvailable();
 
         fwrite($this->sheetFilePointer, self::SHEET_XML_FILE_HEADER);
+        if ($pane) {
+            fwrite($this->sheetFilePointer, $this->getPaneXml($pane));
+        }
         fwrite($this->sheetFilePointer, $this->getColWidths($colWidths));
         fwrite($this->sheetFilePointer, '<sheetData>');
     }
@@ -115,6 +118,16 @@ EOD;
         $result[] = '</cols>';
 
         return implode('', $result);
+    }
+
+    public function getPaneXml($pane)
+    {
+        return '<sheetViews>'
+            . '<sheetView tabSelected="1" workbookViewId="0">'
+                . '<pane ySplit="' . ($pane - 1) . '" topLeftCell="A' . $pane . '" activePane="bottomLeft" state="frozen" />'
+                . '<selection pane="bottomLeft" activeCell="A1" sqref="A1" />'
+            . '</sheetView>'
+            . '</sheetViews>';
     }
 
     /**

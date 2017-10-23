@@ -85,13 +85,13 @@ class Workbook extends AbstractWorkbook
      * @return Worksheet The created sheet
      * @throws \Box\Spout\Common\Exception\IOException If unable to open the sheet for writing
      */
-    public function addNewSheet($colWidths = [])
+    public function addNewSheet($colWidths = [], $pane = null)
     {
         $newSheetIndex = count($this->worksheets);
         $sheet = new Sheet($newSheetIndex, $this->internalId);
 
         $worksheetFilesFolder = $this->fileSystemHelper->getXlWorksheetsFolder();
-        $worksheet = new Worksheet($sheet, $worksheetFilesFolder, $this->sharedStringsHelper, $this->styleHelper, $this->shouldUseInlineStrings, $colWidths, $this);
+        $worksheet = new Worksheet($sheet, $worksheetFilesFolder, $this->sharedStringsHelper, $this->styleHelper, $this->shouldUseInlineStrings, $colWidths, $this, $pane);
         $this->worksheets[] = $worksheet;
 
         return $worksheet;

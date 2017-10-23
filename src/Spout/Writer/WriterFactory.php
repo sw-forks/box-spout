@@ -23,7 +23,7 @@ class WriterFactory
      * @return WriterInterface
      * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
      */
-    public static function create($writerType, $widths = [])
+    public static function create($writerType, $widths = [], $pane = null)
     {
         $writer = null;
 
