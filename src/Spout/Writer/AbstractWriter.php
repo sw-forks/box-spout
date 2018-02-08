@@ -133,7 +133,7 @@ abstract class AbstractWriter implements WriterInterface
      */
     public function openToBrowser($outputFileName, $colWidths = [], $pane = null)
     {
-        $this->outputFilePath = $this->globalFunctionsHelper->basename($outputFileName);
+        $this->outputFilePath = $outputFileName;
 
         $this->filePointer = $this->globalFunctionsHelper->fopen('php://output', 'w');
         $this->throwIfFilePointerIsNotAvailable();
