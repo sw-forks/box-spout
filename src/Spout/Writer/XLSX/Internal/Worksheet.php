@@ -253,7 +253,8 @@ EOD;
         }
 
         if (is_object($cellValue) && $cellValue instanceof \DateTime) {
-            $cellXML .= '><v>' . \PHPExcel_Shared_Date::PHPToExcel($cellValue->format('Y-m-d')) . '</v></c>';
+            $date = \PHPExcel_Shared_Date::FormattedPHPToExcel($cellValue->format('Y'), $cellValue->format('m'), $cellValue->format('d'));
+            $cellXML .= '><v>' . $date . '</v></c>';
         } else if (CellHelper::isNonEmptyString($cellValue)) {
             $cellXML .= $this->getCellXMLFragmentForNonEmptyString($cellValue);
         } else if (CellHelper::isBoolean($cellValue)) {
